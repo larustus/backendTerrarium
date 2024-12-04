@@ -1,18 +1,16 @@
 package com.example.terrariumappbackend.repository;
 
-import com.example.terrariumappbackend.entity.Reading;
+import java.time.LocalDate;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.Date;
+import com.example.terrariumappbackend.entity.Reading;
 import java.util.List;
-import java.util.Optional;
+import java.util.Date;
 
-public interface ReadingRepository extends CrudRepository<Reading, Integer> {
+public interface ReadingRepository extends CrudRepository<Reading, Integer>{
     Reading findFirstByTerrarium_IdOrderByDateDesc(Integer terrarium_id);
 
     @Query("SELECT r FROM Reading r WHERE DATE(r.date) = :date AND r.terrarium.id = :terrarium_id ORDER BY r.date ASC")

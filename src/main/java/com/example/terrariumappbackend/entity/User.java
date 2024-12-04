@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import java.util.List;
+
 @Data
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,6 +27,10 @@ public class User{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Terrarium> terrariumList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Pin> pinList;
 
     public Integer getId() {
         return id;
@@ -51,11 +56,19 @@ public class User{
         this.password_hash = password_hash;
     }
 
-    public List<Terrarium> getTerrariumList() {
+    public List<Terrarium> getTerrariumList(){
         return terrariumList;
     }
 
-    public void setTerrariumList(List<Terrarium> terrariumList) {
+    public void setTerrariumList(List<Terrarium> terrariumList){
         this.terrariumList = terrariumList;
+    }
+
+    public List<Pin> getPinList(){
+        return pinList;
+    }
+
+    public void setPinList(List<Pin> pinList){
+        this.pinList = pinList;
     }
 }

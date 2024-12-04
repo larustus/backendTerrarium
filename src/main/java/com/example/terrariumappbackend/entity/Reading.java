@@ -1,13 +1,23 @@
 package com.example.terrariumappbackend.entity;
 
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
-import java.sql.Timestamp;
-
 
 @Data
 @Entity
@@ -24,11 +34,15 @@ public class Reading {
     private Timestamp date;
 
     @NonNull
-    @Column(name = "temperature", nullable = false)
-    private Integer temperature;
+    @Column(name = "temperature_1", nullable = false)
+    private Integer temperature_1;
 
     @NonNull
-    @Column
+    @Column(name = "temperature_2", nullable = false)
+    private Integer temperature_2;
+
+    @NonNull
+    @Column(name = "humidity", nullable = false)
     private Integer humidity;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,12 +67,20 @@ public class Reading {
         this.date = date;
     }
 
-    public int getTemperature() {
-        return temperature;
+    public int getTemperature_1() {
+        return temperature_1;
     }
 
-    public void setTemperature(int temperature) {
-        this.temperature = temperature;
+    public void setTemperature_1(int temperature_1) {
+        this.temperature_1 = temperature_1;
+    }
+
+    public int getTemperature_2() {
+        return temperature_2;
+    }
+
+    public void setTemperature_2(int temperature_2) {
+        this.temperature_2 = temperature_2;
     }
 
     public int getHumidity() {
@@ -76,4 +98,5 @@ public class Reading {
     public void setTerrarium(Terrarium terrarium) {
         this.terrarium = terrarium;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.terrariumappbackend.dto;
+package com.example.terrariumappbackend.DTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +14,7 @@ public class TerrariumDisplayDTO {
     private Integer min_temp;
     private Integer max_hum;
     private Integer min_hum;
+    private Integer water_time;
 
     public Integer getId() {
         return id;
@@ -78,5 +79,12 @@ public class TerrariumDisplayDTO {
     public void setMin_hum(Integer min_hum) {
         this.min_hum = min_hum;
     }
-}
 
+    public Integer getWater_time(){
+        return water_time;
+    }
+
+    public void setWater_time(Integer water_time){
+        this.water_time = water_time;
+    }
+}

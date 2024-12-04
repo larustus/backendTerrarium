@@ -1,9 +1,13 @@
 package com.example.terrariumappbackend.repository;
 
-import com.example.terrariumappbackend.entity.Reading;
-import com.example.terrariumappbackend.entity.Terrarium;
 import org.springframework.data.repository.CrudRepository;
 
-public interface TerrariumRepository extends CrudRepository<Terrarium, Integer> {
+import com.example.terrariumappbackend.entity.Terrarium;
+import com.example.terrariumappbackend.entity.User;
 
+import java.util.List;
+
+
+public interface TerrariumRepository extends CrudRepository<Terrarium, Integer>{
+    List<Terrarium> findByUser(User user);
 }

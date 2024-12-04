@@ -2,13 +2,23 @@ package com.example.terrariumappbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
 import java.util.List;
+
 
 @Data
 @Entity
@@ -40,12 +50,15 @@ public class Terrarium {
     private Integer min_temp;
 
     @NonNull
-    @Column
+    @Column(name = "max_hum")
     private Integer max_hum;
 
     @NonNull
-    @Column
+    @Column(name = "min_hum")
     private Integer min_hum;
+
+    @Column(name = "water_time")
+    private Integer water_time;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NonNull
@@ -136,4 +149,13 @@ public class Terrarium {
     public void setReadingList(List<Reading> readingList) {
         this.readingList = readingList;
     }
+
+    public Integer getWater_time(){
+        return water_time;
+    }
+
+    public void setWater_time(Integer water_time){
+        this.water_time = water_time;
+    }
+
 }

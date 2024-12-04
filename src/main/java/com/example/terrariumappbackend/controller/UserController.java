@@ -1,16 +1,18 @@
 package com.example.terrariumappbackend.controller;
 
-import com.example.terrariumappbackend.dto.UserDTO;
-import com.example.terrariumappbackend.entity.User;
-import com.example.terrariumappbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.terrariumappbackend.entity.Terrarium;
+import com.example.terrariumappbackend.entity.User;
+import com.example.terrariumappbackend.repository.UserRepository;
+import com.example.terrariumappbackend.service.UserService;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -27,13 +29,4 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{userId}")
-    public UserDTO getUserById(@PathVariable("userId") Integer userId){
-        Optional<User> optionalUser = userService.findUserById(userId);
-        if (optionalUser.isPresent()){
-            return userService.converToDto(optionalUser.get());
-        }else{
-            throw new RuntimeException("User not found");
-        }
-    }
 }
