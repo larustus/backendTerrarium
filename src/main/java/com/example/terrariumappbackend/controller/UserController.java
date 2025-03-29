@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.terrariumappbackend.DTO.UserDTO;
 import com.example.terrariumappbackend.entity.Terrarium;
 import com.example.terrariumappbackend.entity.User;
 import com.example.terrariumappbackend.repository.UserRepository;
@@ -29,4 +30,14 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{user_id}")
+    public UserDTO getUserById(@PathVariable("user_id") Integer user_id) {
+        User user = userService.findUserById(user_id)
+            .orElseThrow(() -> new IllegalArgumentException("Terrarium not found"));
+        return userService.convUserDTO(user);
+    }
+    
+
+
+    
 }

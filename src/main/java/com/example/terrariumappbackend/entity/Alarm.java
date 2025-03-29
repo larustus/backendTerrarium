@@ -1,5 +1,7 @@
 package com.example.terrariumappbackend.entity;
 
+import java.sql.Time;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -17,28 +19,29 @@ import lombok.NonNull;
 
 @Data
 @Entity
-@Table(name = "pins")
+@Table(name = "alarms")
 @NoArgsConstructor
-public class Pin {
+public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "function")
     @NonNull
-    private String function;
+    @Column(name = "start_time")
+    private Time start_time;
 
-    @Column(name = "terrarium_id")
-    private Integer terrarium_id;
+    @Column(name = "end_time")
+    private Time end_time;
 
-    @Column(name = "probe_serial_number")
-    private String probe_serial_number;
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    @Column(name = "highest_offshoot")
+    private Float highest_offshoot;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @NonNull
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "terrarium_id")
     @JsonBackReference
-    private User user;
-
-    
+    @NonNull
+    private Terrarium terrarium;
 }
