@@ -38,4 +38,9 @@ public class PinService {
         return pins;
     }
 
+    public List<Pin> getAllPinsByTerrariumId(Integer terrarium_id, Integer user_id){
+        List<Pin> pins = pinRepository.findByTerrariumId(terrarium_id, user_id);
+        return pins;
+    }
+
 }

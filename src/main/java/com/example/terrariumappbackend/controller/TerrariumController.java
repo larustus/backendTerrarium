@@ -9,14 +9,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.terrariumappbackend.service.TerrariumService;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.None;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.terrariumappbackend.DTO.TerrariumDTO;
 import com.example.terrariumappbackend.DTO.TerrariumDisplayDTO;
+import com.example.terrariumappbackend.DTO.TerrariumRaspberry;
+import com.example.terrariumappbackend.entity.Pin;
 import com.example.terrariumappbackend.entity.Terrarium;
 import com.example.terrariumappbackend.entity.User;
+import com.example.terrariumappbackend.repository.AlarmRepository;
+import com.example.terrariumappbackend.repository.PinRepository;
+import com.example.terrariumappbackend.repository.ReadingRepository;
 import com.example.terrariumappbackend.repository.TerrariumRepository;
 import com.example.terrariumappbackend.repository.UserRepository;
 
@@ -24,6 +32,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @RestController
@@ -32,19 +42,32 @@ public class TerrariumController {
     private final TerrariumService terrariumService;
     private final TerrariumRepository terrariumRepository;
     private final UserRepository userRepository;
+    private final ReadingRepository readingRepository;
+    private final AlarmRepository alarmRepository;
+    private final PinRepository pinRepository;
+    private static final Logger logger = LoggerFactory.getLogger(TerrariumController.class);
 
     @Autowired
-    public TerrariumController(TerrariumService terrariumService, TerrariumRepository terrariumRepository, UserRepository userRepository){
+    public TerrariumController(TerrariumService terrariumService, TerrariumRepository terrariumRepository, UserRepository userRepository, ReadingRepository readingRepository, AlarmRepository alarmRepository, PinRepository pinRepository) {
+        this.pinRepository = pinRepository;
+        this.alarmRepository = alarmRepository;
+        this.readingRepository = readingRepository;
         this.terrariumService = terrariumService;
         this.terrariumRepository = terrariumRepository;
         this.userRepository = userRepository;
     }
-
+    // Terrarrium o danym id
+    @GetMapping("/{terrarium_id}/rasp")
+    public TerrariumDisplayDTO getTerrarriumsByUserId(@PathVariable Integer terrarium_id) {
+        return terrariumService.getTerrarriumDTOById(terrarium_id);
+    }
+    // Lista terrariów użytkownika do wyświetlania danych na stronie głównej
     @GetMapping("/user/{user_id}")
-    public List<TerrariumDisplayDTO> getTerrarriumsByUserId(@PathVariable Integer user_id) {
-        return terrariumService.getTerrarriumsByUserId(user_id);
+    public List<TerrariumDisplayDTO> getTerrariumByUserId(@PathVariable Integer user_id) {
+        return terrariumService.getAllTerrariumDTOsByUserId(user_id);
     }
 
+    
     @GetMapping("/user/id/{user_id}")
     public List<TerrariumDTO> getTerrariumDTOsByUserId(@PathVariable Integer user_id){
         return terrariumService.getTerrariumIdsByUserId(user_id);
@@ -185,5 +208,47 @@ public class TerrariumController {
         return terrariumRepository.save(terrarium);
     }
     
+    @GetMapping("/{id}/raspberry_terrarium")
+    public TerrariumRaspberry getTerrariumRaspberry(@PathVariable("id") Integer terrariumId){
+        TerrariumRaspberry terrariumRaspberry = terrariumService.getTerrariumForRaspberry(terrariumId);
+        return terrariumRaspberry;
+    }
+
+    @DeleteMapping("/remove/{terrarium_id}")
+    public ResponseEntity<String> deleteTerrarium(@PathVariable Integer terrarium_id) {
+        logger.info("Starting deletion of terrarium with ID: {}", terrarium_id);
+        
+        Terrarium terrarium = terrariumRepository.findById(terrarium_id)
+            .orElseThrow(() -> new RuntimeException("Terrarium not found with ID: " + terrarium_id));
+        User user = terrarium.getUser(); // Assuming you have a relation
     
+
+        logger.info("User found: {}", user.getUsername());
+
+        readingRepository.deleteByTerrarium_Id(terrarium_id);
+        logger.info("Deleted readings for terrarium {}", terrarium_id);
+
+        alarmRepository.deleteByTerrarium_Id(terrarium_id);
+        logger.info("Deleted alarms for terrarium {}", terrarium_id);
+
+        List<Pin> pins = pinRepository.findByTerrariumId(terrarium_id, user.getId());
+        logger.info("Found {} pins for terrarium {}", pins.size(), terrarium_id);
+
+        for (Pin pin : pins) {
+            pin.setTerrarium_id(null);
+            pinRepository.save(pin);
+        }
+        logger.info("Cleared terrarium_id for related pins");
+
+        try {
+            terrariumRepository.deleteById(terrarium_id);
+            logger.info("Terrarium {} deleted successfully", terrarium_id);
+            return ResponseEntity.ok("Terrarium deleted successfully.");
+        } catch (Exception e) {
+            logger.error("Error deleting terrarium: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("Error deleting terrarium: " + e.getMessage());
+        }
+    }
+
+
 }

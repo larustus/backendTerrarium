@@ -15,5 +15,7 @@ public interface AlarmRepository extends CrudRepository<Alarm, Integer>{
     List<Alarm> findAlarmsByTerrariumId(@Param("terrarium_id") Integer terrarium_id);
 
     Optional<Alarm> findFirstByTerrarium_IdAndIsActiveTrue(Integer terrariumId);
+    Optional<Alarm> findFirstByTerrarium_IdAndIsActiveTrueAndType(Integer terrariumId, String type);
 
+    void deleteByTerrarium_Id(Integer terrariumId);
 }

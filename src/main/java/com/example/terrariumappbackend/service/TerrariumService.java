@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.terrariumappbackend.DTO.TerrariumDTO;
 import com.example.terrariumappbackend.DTO.TerrariumDisplayDTO;
+import com.example.terrariumappbackend.DTO.TerrariumRaspberry;
 import com.example.terrariumappbackend.entity.Terrarium;
 import com.example.terrariumappbackend.entity.User;
 import com.example.terrariumappbackend.repository.TerrariumRepository;
@@ -28,8 +29,20 @@ public class TerrariumService {
         this.userRepository = userRepository;
     }
 
-    public List<TerrariumDisplayDTO> getTerrarriumsByUserId(Integer user_id){
+    public TerrariumDisplayDTO getTerrarriumDTOById(Integer terrarium_id){
         
+        Terrarium terrarium = terrariumRepository.findById(terrarium_id)
+                .orElseThrow(() -> new RuntimeException("Terrarium not found with ID: " + terrarium_id));
+        // User user = userRepository.findById(user_id)
+        //         .orElseThrow(() -> new RuntimeException("User not found with ID: " + user_id));
+        // List<Terrarium> terrariums = terrariumRepository.findByUser(user);
+        TerrariumDisplayDTO terrariumDTO = convertToDto(terrarium);
+        return terrariumDTO;
+            // .map(this::convertToDto)
+            // .collect(Collectors.toList());
+    }
+
+    public List<TerrariumDisplayDTO> getAllTerrariumDTOsByUserId(Integer user_id){
         User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + user_id));
         List<Terrarium> terrariums = terrariumRepository.findByUser(user);
@@ -37,6 +50,7 @@ public class TerrariumService {
             .map(this::convertToDto)
             .collect(Collectors.toList());
     }
+
 
     public TerrariumDisplayDTO convertToDto(Terrarium terrarium){
         TerrariumDisplayDTO terrariumDisplayDTO = new TerrariumDisplayDTO();
@@ -87,4 +101,21 @@ public class TerrariumService {
         terrariumRepository.save(terrarium);
         return true;
     }
+
+    public TerrariumRaspberry getTerrariumForRaspberry(Integer terrariumId){
+        Terrarium terrarium = terrariumRepository.findById(terrariumId)
+            .orElseThrow(() -> new IllegalArgumentException("Terrarium not found"));
+        TerrariumRaspberry terrariumRaspberry = new TerrariumRaspberry();
+        terrariumRaspberry.setId(terrariumId);
+        terrariumRaspberry.setTemperature_goal(terrarium.getTemperature_goal());
+        terrariumRaspberry.setHumidity_goal(terrarium.getHumidity_goal());
+        terrariumRaspberry.setMax_temp(terrarium.getMax_temp());
+        terrariumRaspberry.setMin_temp(terrarium.getMin_temp());
+        terrariumRaspberry.setMax_hum(terrarium.getMax_hum());
+        terrariumRaspberry.setMin_hum(terrarium.getMin_hum());
+        terrariumRaspberry.setWater_time(terrarium.getWater_time());
+        terrariumRaspberry.setWater_period(terrarium.getWater_period());
+        return terrariumRaspberry;
+    }
+
 }

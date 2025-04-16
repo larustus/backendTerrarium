@@ -21,4 +21,6 @@ public interface ReadingRepository extends CrudRepository<Reading, Integer>{
 
     @Query("SELECT r FROM Reading r WHERE DATE(r.date) = :date ORDER BY r.date ASC")
     Reading findFirstReadingOfDay(@Param("date") LocalDate date);
+
+    void deleteByTerrarium_Id(Integer terrariumId);
 }

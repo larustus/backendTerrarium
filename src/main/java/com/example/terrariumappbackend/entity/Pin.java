@@ -24,7 +24,7 @@ public class Pin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "function")
+    @Column(name = "pin_function")
     @NonNull
     private String function;
 

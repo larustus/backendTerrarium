@@ -39,6 +39,9 @@ public class Alarm {
     @Column(name = "highest_offshoot")
     private Float highest_offshoot;
 
+    @Column(name = "type")
+    private String type;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "terrarium_id")
     @JsonBackReference
