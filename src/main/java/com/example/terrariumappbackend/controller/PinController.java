@@ -1,6 +1,7 @@
 package com.example.terrariumappbackend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,19 @@ public class PinController {
         return pinService.getAllFreeDSPinsForUser(user_id, prefix);
     }
     
+    @GetMapping("assigned/{user_id}/{terrarium_id}")
+    public ResponseEntity<List<Map<String, Object>>> getAllAssignedPins(@PathVariable Integer user_id, @PathVariable Integer terrarium_id) {
+        List<Pin> pins = pinService.getAllPinsByTerrariumId(terrarium_id, user_id);
+        List<Map<String, Object>> assignedPins = pins.stream().map(pin -> {
+            Map<String, Object> pinMap = Map.of(
+                    "id", pin.getId(),
+                    "function", pin.getFunction()
+            );
+            return pinMap;
+        }).toList();
+        return ResponseEntity.ok(assignedPins);
+    }
+
     @PostMapping("/assign")
     public ResponseEntity<String> postMethodName(@RequestBody PinAssignmentDTO dto) {
         Logger logger = LoggerFactory.getLogger(getClass());
